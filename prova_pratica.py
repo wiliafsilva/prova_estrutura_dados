@@ -1,15 +1,18 @@
 from graphviz import Digraph
 
+#Representa um nó da árvore
 class No:
     def __init__(self, valor):
         self.valor = valor
         self.esq = None
         self.dir = None
 
+#Construtor da árvore
 class Arvore:
     def __init__(self):
         self.raiz = None
 
+#Método de inserção
     def inserir(self, valor):
         self.raiz = self._inserir_recursivo(self.raiz, valor)
 
@@ -21,7 +24,7 @@ class Arvore:
         elif valor > no.valor:
             no.dir = self._inserir_recursivo(no.dir, valor)
         return no
-
+#Método de busca
     def buscar(self, valor):
         return self._buscar_recursivo(self.raiz, valor)
 
@@ -32,7 +35,7 @@ class Arvore:
             return self._buscar_recursivo(no.esq, valor)
         else:
             return self._buscar_recursivo(no.dir, valor)
-
+#Método de remoção
     def remover(self, valor):
         self.raiz = self._remover_recursivo(self.raiz, valor)
 
@@ -57,13 +60,15 @@ class Arvore:
             no.valor = sucessor.valor
             no.dir = self._remover_recursivo(no.dir, sucessor.valor)
         return no
-
+    
+#Localiza o sucessor em-ordem (o menor valor da subárvore direita)
     def _minimo(self, no):
         atual = no
         while atual.esq is not None:
             atual = atual.esq
         return atual
 
+#Métodos de percurso (pre-ordem, em-ordem e pos-ordem)
     def pre_ordem(self):
         return self._pre_ordem(self.raiz)
 
@@ -82,6 +87,7 @@ class Arvore:
     def _pos_ordem(self, no):
         return (self._pos_ordem(no.esq) + self._pos_ordem(no.dir) + [no.valor]) if no else []
 
+#Função para desenhar a árvore
 def desenhar_arvore(no, dot=None):
     if dot is None:
         dot = Digraph()
@@ -98,7 +104,7 @@ def desenhar_arvore(no, dot=None):
             desenhar_arvore(no.dir, dot)
     return dot
 
-# Programa principal
+# Opções do menu usuário
 arv = Arvore()
 
 print("Menu Árvore Binária de Busca:")
