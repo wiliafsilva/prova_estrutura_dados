@@ -143,11 +143,11 @@ with col1:
     valor = st.number_input("Digite um valor:", step=1, format="%d")
     col1a, col1b, col1c = st.columns(3)
     with col1a:
-        if st.button("Inserir"):
+        if st.button("✏️ Inserir"):
             st.session_state.arvore.inserir(valor)
             st.session_state.destaque = None
     with col1b:
-        if st.button("Buscar"):
+        if st.button("🔍 Buscar"):
             resultado = st.session_state.arvore.buscar(valor)
             if resultado:
                 st.success(f"Encontrado: {valor}")
@@ -155,18 +155,18 @@ with col1:
             else:
                 st.error(f"{valor} não encontrado na árvore")
     with col1c:
-        if st.button("Remover"):
+        if st.button("🗑️ Remover"):
             st.session_state.arvore.remover(valor)
             st.session_state.destaque = None
 
     st.markdown("---")
-    st.markdown("### 📏 Balanceamento:")
+    st.markdown("### ⚖️ Balanceamento:")
     if st.session_state.arvore.esta_balanceada():
         st.success("A árvore está balanceada")
     else:
         st.error("A árvore NÃO está balanceada")
 
-    st.markdown("### 🌀 Percursos:")
+    st.markdown("### 🧭 Percursos:")
 
     pre_ordem_str = " → ".join(map(str, st.session_state.arvore.pre_ordem()))
     em_ordem_str = " → ".join(map(str, st.session_state.arvore.em_ordem()))
@@ -177,6 +177,6 @@ with col1:
     st.markdown(f"**Pós-ordem:**\n\n{pos_ordem_str}")
 
 with col2:
-    st.markdown("### 🌐 Visualização da Árvore")
+    st.markdown("### 🧑‍🎨 Visualização da Árvore")
     grafico = st.session_state.arvore.gerar_grafo(st.session_state.destaque)
     st.graphviz_chart(grafico)
