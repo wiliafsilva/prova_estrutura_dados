@@ -14,7 +14,13 @@ class ArvoreBinariaBusca:
         self.raiz = None
 
     def inserir(self, valor):
-        self.raiz = self._inserir_rec(self.raiz, valor)
+    # Antes de inserir, verifica se já existe
+        if self.buscar(valor) is not None:
+            return False  # Já existe, não inseriu
+        else:
+            self.raiz = self._inserir_rec(self.raiz, valor)
+        return True  # Inseriu com sucesso
+
 
     def _inserir_rec(self, no, valor):
         if no is None:
@@ -36,7 +42,11 @@ class ArvoreBinariaBusca:
         return self._buscar_rec(no.dir, valor)
 
     def remover(self, valor):
-        self.raiz = self._remover_rec(self.raiz, valor)
+        if self.buscar(valor) is None:
+            return False  # Não existe, não removeu
+        else:
+            self.raiz = self._remover_rec(self.raiz, valor)
+            return True  # Removeu com sucesso
 
     def _remover_rec(self, no, valor):
         if no is None:
@@ -144,20 +154,28 @@ with col1:
     col1a, col1b, col1c = st.columns(3)
     with col1a:
         if st.button("✏️ Inserir"):
-            st.session_state.arvore.inserir(valor)
-            st.session_state.destaque = None
+            resultado = st.session_state.arvore.inserir(valor)
+            if not resultado:
+                st.warning(f"⚠️ O número {valor} já está na árvore.")
+                st.session_state.destaque = None
+            else:
+                st.success(f"✅ Inserido: {valor}")
     with col1b:
         if st.button("🔍 Buscar"):
-            resultado = st.session_state.arvore.buscar(valor)
-            if resultado:
-                st.success(f"Encontrado: {valor}")
+            resultado1 = st.session_state.arvore.buscar(valor)
+            if resultado1:
+                st.success(f"👍 Encontrado: {valor} ")
                 st.session_state.destaque = valor
             else:
-                st.error(f"{valor} não encontrado na árvore")
+                st.error(f" ❌ Não encontrado: {valor}")
     with col1c:
         if st.button("🗑️ Remover"):
-            st.session_state.arvore.remover(valor)
-            st.session_state.destaque = None
+            resultado_remover = st.session_state.arvore.remover(valor)
+            if not resultado_remover:
+                st.warning(f"⚠️ O número {valor} não está na árvore.")
+                st.session_state.destaque = None
+            else:
+                st.success(f"✅ Removido: {valor}")
 
     st.markdown("---")
     st.markdown("### ⚖️ Balanceamento:")
