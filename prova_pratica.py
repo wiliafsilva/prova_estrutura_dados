@@ -1,20 +1,24 @@
 from graphviz import Digraph
 
-#Representa um nó da árvore
+# Representa um nó da árvore
 class No:
     def __init__(self, valor):
         self.valor = valor
         self.esq = None
         self.dir = None
 
-#Construtor da árvore
+# Construtor da árvore
 class Arvore:
     def __init__(self):
         self.raiz = None
 
-#Método de inserção
+    # Método de inserção com verificação de duplicatas
     def inserir(self, valor):
-        self.raiz = self._inserir_recursivo(self.raiz, valor)
+        if self.buscar(valor):
+            print(f"Valor {valor} já existe na árvore. Não será inserido novamente.")
+        else:
+            self.raiz = self._inserir_recursivo(self.raiz, valor)
+            print(f"Valor {valor} inserido com sucesso.")
 
     def _inserir_recursivo(self, no, valor):
         if no is None:
@@ -24,7 +28,8 @@ class Arvore:
         elif valor > no.valor:
             no.dir = self._inserir_recursivo(no.dir, valor)
         return no
-#Método de busca
+
+    # Método de busca
     def buscar(self, valor):
         return self._buscar_recursivo(self.raiz, valor)
 
@@ -35,9 +40,14 @@ class Arvore:
             return self._buscar_recursivo(no.esq, valor)
         else:
             return self._buscar_recursivo(no.dir, valor)
-#Método de remoção
+
+    # Método de remoção com verificação de existência
     def remover(self, valor):
-        self.raiz = self._remover_recursivo(self.raiz, valor)
+        if not self.buscar(valor):
+            print(f"Valor {valor} não encontrado. Nada será removido.")
+        else:
+            self.raiz = self._remover_recursivo(self.raiz, valor)
+            print(f"Valor {valor} removido com sucesso.")
 
     def _remover_recursivo(self, no, valor):
         if no is None:
@@ -60,15 +70,15 @@ class Arvore:
             no.valor = sucessor.valor
             no.dir = self._remover_recursivo(no.dir, sucessor.valor)
         return no
-    
-#Localiza o sucessor em-ordem (o menor valor da subárvore direita)
+
+    # Localiza o sucessor em-ordem (o menor valor da subárvore direita)
     def _minimo(self, no):
         atual = no
         while atual.esq is not None:
             atual = atual.esq
         return atual
 
-#Métodos de percurso (pre-ordem, em-ordem e pos-ordem)
+    # Métodos de percurso
     def pre_ordem(self):
         return self._pre_ordem(self.raiz)
 
@@ -87,7 +97,7 @@ class Arvore:
     def _pos_ordem(self, no):
         return (self._pos_ordem(no.esq) + self._pos_ordem(no.dir) + [no.valor]) if no else []
 
-#Função para desenhar a árvore
+# Função para desenhar a árvore
 def desenhar_arvore(no, dot=None):
     if dot is None:
         dot = Digraph()
@@ -104,7 +114,7 @@ def desenhar_arvore(no, dot=None):
             desenhar_arvore(no.dir, dot)
     return dot
 
-# Opções do menu usuário
+# Menu interativo
 arv = Arvore()
 
 print("Menu Árvore Binária de Busca:")
@@ -129,15 +139,20 @@ while True:
                 print("Valor inválido. Digite um número inteiro ou 'parar'.")
     elif opcao == '2':
         valor = input("Digite o valor a buscar: ")
-        no = arv.buscar(int(valor))
-        if no:
-            print(f"Valor {valor} encontrado na árvore.")
-        else:
-            print(f"Valor {valor} não está na árvore.")
+        try:
+            no = arv.buscar(int(valor))
+            if no:
+                print(f"Valor {valor} encontrado na árvore.")
+            else:
+                print(f"Valor {valor} não está na árvore.")
+        except ValueError:
+            print("Valor inválido.")
     elif opcao == '3':
         valor = input("Digite o valor a remover: ")
-        arv.remover(int(valor))
-        print(f"Valor {valor} removido (se existia).")
+        try:
+            arv.remover(int(valor))
+        except ValueError:
+            print("Valor inválido.")
     elif opcao == '4':
         print("Pré-ordem:", arv.pre_ordem())
         print("Em-ordem:", arv.em_ordem())
@@ -148,6 +163,7 @@ while True:
         dot.render('arvore_binaria', format='png', cleanup=True)
         print("Árvore salva como 'arvore_binaria.png'")
     elif opcao == '6':
+        print("Encerrando o programa.")
         break
     else:
         print("Opção inválida.")
